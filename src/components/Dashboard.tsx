@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { 
   LayoutDashboard, 
@@ -7,7 +7,12 @@ import {
   Zap,
   Brain,
   Triangle,
-  Circle
+  Circle,
+  Bookmark,
+  BookmarkCheck,
+  X,
+  ChevronDown,
+  Filter
 } from 'lucide-react';
 import { PROVIDERS, type NavigateFunction } from '../types';
 
@@ -46,6 +51,83 @@ export function Dashboard({ onNavigate }: { onNavigate: NavigateFunction }) {
   const { user, logout, isAdmin } = useAuth();
   const [progress, setProgress] = useState(0);
   const [usagePercent, setUsagePercent] = useState(50);
+
+  // Filter states
+  const [providerFilter, setProviderFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  
+  // Saved filters state
+  const [savedFilters, setSavedFilters] = useState<Array<{ 
+    id: string; 
+    name: string; 
+    providerFilter: string; 
+    statusFilter: string;
+  }>>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('api-token-monitor-saved-filters');
+      return stored ? JSON.parse(stored) : [];
+    }
+    return [];
+  });
+  const [showSaveFilterModal, setShowSaveFilterModal] = useState(false);
+  const [newFilterName, setNewFilterName] = useState('');
+  const [showLoadFilterDropdown, setShowLoadFilterDropdown] = useState(false);
+
+  // Persist saved filters
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('api-token-monitor-saved-filters', JSON.stringify(savedFilters));
+    }
+  }, [savedFilters]);
+
+  // Save current filter
+  const handleSaveFilter = () => {
+    if (!newFilterName.trim()) return;
+    const newFilter = {
+      id: Date.now().toString(),
+      name: newFilterName.trim(),
+      providerFilter,
+      statusFilter,
+    };
+    setSavedFilters([...savedFilters, newFilter]);
+    setNewFilterName('');
+    setShowSaveFilterModal(false);
+  };
+
+  // Load saved filter
+  const handleLoadFilter = (filter: typeof savedFilters[0]) => {
+    setProviderFilter(filter.providerFilter);
+    setStatusFilter(filter.statusFilter);
+    setShowLoadFilterDropdown(false);
+  };
+
+  // Delete saved filter
+  const handleDeleteFilter = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSavedFilters(savedFilters.filter(f => f.id !== id));
+  };
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    setProviderFilter('all');
+    setStatusFilter('all');
+  };
+
+  // Filtered activity data
+  const filteredActivity = useMemo(() => {
+    return mockActivity.filter(activity => {
+      if (providerFilter !== 'all' && activity.provider.toLowerCase() !== providerFilter.toLowerCase()) {
+        return false;
+      }
+      if (statusFilter === 'success' && activity.status !== 200) {
+        return false;
+      }
+      if (statusFilter === 'error' && activity.status === 200) {
+        return false;
+      }
+      return true;
+    });
+  }, [providerFilter, statusFilter]);
 
   useEffect(() => {
     const used = 5234;
@@ -224,10 +306,110 @@ export function Dashboard({ onNavigate }: { onNavigate: NavigateFunction }) {
         </div>
 
         <div className="glass-card overflow-hidden">
-          <div className="p-6 border-b border-white/10 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-white">Activity Log</h2>
-            <button className="text-sm text-neon-cyan hover:underline">View All</button>
+          <div className="p-6 border-b border-white/10">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <h2 className="text-xl font-bold text-white">Activity Log</h2>
+              
+              {/* Filter Controls */}
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-neon-cyan" />
+                  <select
+                    value={providerFilter}
+                    onChange={(e) => setProviderFilter(e.target.value)}
+                    className="bg-bg-secondary/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-neon-cyan focus:outline-none"
+                  >
+                    <option value="all">All Providers</option>
+                    <option value="OpenAI">OpenAI</option>
+                    <option value="Anthropic">Anthropic</option>
+                    <option value="Grok">Grok</option>
+                  </select>
+                  
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="bg-bg-secondary/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-neon-cyan focus:outline-none"
+                  >
+                    <option value="all">All Status</option>
+                    <option value="success">Success</option>
+                    <option value="error">Error</option>
+                  </select>
+                </div>
+
+                {/* Save/Load Filter Buttons */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowSaveFilterModal(true)}
+                    className="flex items-center gap-1 px-3 py-2 rounded-lg bg-neon-cyan/10 border border-neon-cyan/30 text-neon-cyan text-sm hover:bg-neon-cyan/20 transition-colors"
+                  >
+                    <Bookmark className="w-4 h-4" />
+                    Save
+                  </button>
+                  
+                  {savedFilters.length > 0 && (
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowLoadFilterDropdown(!showLoadFilterDropdown)}
+                        className="flex items-center gap-1 px-3 py-2 rounded-lg bg-neon-purple/10 border border-neon-purple/30 text-neon-purple text-sm hover:bg-neon-purple/20 transition-colors"
+                      >
+                        <BookmarkCheck className="w-4 h-4" />
+                        Load
+                        <ChevronDown className={`w-3 h-3 transition-transform ${showLoadFilterDropdown ? 'rotate-180' : ''}`} />
+                      </button>
+                      
+                      {showLoadFilterDropdown && (
+                        <div className="absolute right-0 mt-2 w-64 bg-bg-secondary border border-white/10 rounded-xl shadow-2xl z-50 max-h-64 overflow-y-auto">
+                          <div className="p-3 border-b border-white/10">
+                            <span className="text-xs font-medium text-gray-400">Saved Filters ({savedFilters.length})</span>
+                          </div>
+                          {savedFilters.map((filter) => (
+                            <div
+                              key={filter.id}
+                              onClick={() => handleLoadFilter(filter)}
+                              className="flex items-center justify-between px-4 py-3 hover:bg-white/5 cursor-pointer border-b border-white/5 last:border-0"
+                            >
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-white truncate">{filter.name}</p>
+                                <p className="text-xs text-gray-500">
+                                  {filter.providerFilter !== 'all' && `${filter.providerFilter}`}
+                                  {filter.providerFilter !== 'all' && filter.statusFilter !== 'all' && ' • '}
+                                  {filter.statusFilter !== 'all' && `${filter.statusFilter}`}
+                                  {filter.providerFilter === 'all' && filter.statusFilter === 'all' && 'No filters'}
+                                </p>
+                              </div>
+                              <button
+                                onClick={(e) => handleDeleteFilter(filter.id, e)}
+                                className="p-1 text-gray-500 hover:text-neon-red ml-2"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {(providerFilter !== 'all' || statusFilter !== 'all') && (
+                    <button
+                      onClick={handleClearFilters}
+                      className="flex items-center gap-1 px-3 py-2 rounded-lg bg-neon-red/10 border border-neon-red/30 text-neon-red text-sm hover:bg-neon-red/20 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
+          
+          <div className="px-6 py-3 border-b border-white/10 bg-white/5">
+            <p className="text-sm text-gray-400">
+              Showing <span className="text-white font-medium">{filteredActivity.length}</span> of <span className="text-white font-medium">{mockActivity.length}</span> activities
+            </p>
+          </div>
+          
           <div className="overflow-x-auto">
             <table className="data-table w-full">
               <thead>
@@ -240,7 +422,7 @@ export function Dashboard({ onNavigate }: { onNavigate: NavigateFunction }) {
                 </tr>
               </thead>
               <tbody>
-                {mockActivity.map((activity) => (
+                {filteredActivity.map((activity) => (
                   <tr key={activity.id}>
                     <td className="font-mono text-sm">{activity.timestamp}</td>
                     <td>
@@ -268,6 +450,60 @@ export function Dashboard({ onNavigate }: { onNavigate: NavigateFunction }) {
             </table>
           </div>
         </div>
+
+        {/* Save Filter Modal */}
+        {showSaveFilterModal && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="glass-card p-6 w-full max-w-md mx-4 border border-neon-cyan/30">
+              <h3 className="text-xl font-bold text-white mb-2">Save Filter</h3>
+              <p className="text-sm text-gray-400 mb-4">
+                Save current filter settings for future use.
+              </p>
+              <input
+                type="text"
+                placeholder='Filter name (e.g. "OpenAI Errors")'
+                value={newFilterName}
+                onChange={(e) => setNewFilterName(e.target.value)}
+                className="w-full bg-bg-secondary/50 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-neon-cyan focus:outline-none mb-4"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSaveFilter();
+                  if (e.key === 'Escape') setShowSaveFilterModal(false);
+                }}
+              />
+              
+              <div className="bg-bg-secondary/50 rounded-lg p-4 mb-4 border border-white/10">
+                <p className="font-medium text-neon-cyan mb-2 text-sm">Current filter:</p>
+                <ul className="text-sm text-gray-300 space-y-1">
+                  {providerFilter !== 'all' && <li>Provider: {providerFilter}</li>}
+                  {statusFilter !== 'all' && <li>Status: {statusFilter}</li>}
+                  {providerFilter === 'all' && statusFilter === 'all' && (
+                    <li className="text-gray-500">No active filters</li>
+                  )}
+                </ul>
+              </div>
+              
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => {
+                    setShowSaveFilterModal(false);
+                    setNewFilterName('');
+                  }}
+                  className="px-4 py-2 rounded-lg border border-white/20 text-gray-300 hover:bg-white/5 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveFilter}
+                  disabled={!newFilterName.trim()}
+                  className="px-4 py-2 rounded-lg bg-neon-cyan/20 border border-neon-cyan/50 text-neon-cyan hover:bg-neon-cyan/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Save Filter
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
