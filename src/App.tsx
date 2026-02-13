@@ -1,18 +1,12 @@
 import { useState } from 'react';
-import { AuthProvider, useAuth } from './hooks/useAuth';
-import { Login } from './components/Login';
+import { AuthProvider } from './hooks/useAuth';
 import { Dashboard } from './components/Dashboard';
 import { Settings } from './components/Settings';
 import { Admin } from './components/Admin';
 import type { Page } from './types';
 
 function AppContent() {
-  const { isAuthenticated } = useAuth();
   const [currentPage, setCurrentPage] = useState<Page>('dashboard');
-
-  if (!isAuthenticated) {
-    return <Login />;
-  }
 
   const handleNavigate = (page: Page) => setCurrentPage(page);
 
@@ -27,6 +21,7 @@ function AppContent() {
   }
 }
 
+// Bypass auth - direct access to app
 function App() {
   return (
     <AuthProvider>
