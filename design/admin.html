@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Token Monitor v2 - Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'neon-cyan': '#00f5ff',
+            'neon-purple': '#b829ff',
+            'neon-pink': '#ff2d95',
+            'neon-green': '#00ff88',
+            'neon-yellow': '#ffd700',
+            'neon-red': '#ff2d2d',
+            'bg-primary': '#0a0a0f',
+            'bg-secondary': '#12121a',
+            'bg-card': 'rgba(20, 20, 30, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-bg-primary min-h-screen">
+  <!-- Animated Grid Background -->
+  <div class="grid-bg"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/30 flex items-center justify-center">
+          <svg class="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="font-bold text-white text-sm">API Token Monitor</h2>
+          <p class="text-xs text-gray-500">v2.0.0</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="settings.html" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <span>Settings</span>
+      </a>
+      <a href="admin.html" class="nav-item active">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        <span>Admin</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-neon-purple to-neon-pink flex items-center justify-center text-white font-bold text-xs">
+          JD
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-white truncate">John Doe</p>
+          <p class="text-xs text-gray-500">Admin</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="ml-[260px] min-h-screen p-8 relative z-10">
+    <!-- Header -->
+    <header class="mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-white mb-1">Admin Panel</h1>
+        <p class="text-gray-400">Manage access tokens and system configuration</p>
+      </div>
+    </header>
+
+    <!-- System Status Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-neon-green/10 border border-neon-green/30 flex items-center justify-center">
+            <svg class="w-5 h-5 text-neon-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+          <span class="text-sm text-gray-400">System Status</span>
+        </div>
+        <p class="text-2xl font-bold text-neon-green">Healthy</p>
+      </div>
+      
+      <div class="stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-neon-cyan/10 border border-neon-cyan/30 flex items-center justify-center">
+            <svg class="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+          </div>
+          <span class="text-sm text-gray-400">Active Users</span>
+        </div>
+        <p class="text-2xl font-bold text-neon-cyan">24</p>
+      </div>
+      
+      <div class="stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-neon-purple/10 border border-neon-purple/30 flex items-center justify-center">
+            <svg class="w-5 h-5 text-neon-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+            </svg>
+          </div>
+          <span class="text-sm text-gray-400">Active Tokens</span>
+        </div>
+        <p class="text-2xl font-bold text-neon-purple">156</p>
+      </div>
+      
+      <div class="stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-neon-pink/10 border border-neon-pink/30 flex items-center justify-center">
+            <svg class="w-5 h-5 text-neon-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <span class="text-sm text-gray-400">Requests/min</span>
+        </div>
+        <p class="text-2xl font-bold text-neon-pink">1,234</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Generate Token Card -->
+      <div class="lg:col-span-1">
+        <div class="glass-card p-6 sticky top-8">
+          <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <svg class="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+            </svg>
+            Generate Token
+          </h2>
+          
+          <form id="generateTokenForm" class="space-y-5">
+            <div>
+              <label class="form-label">Role</label>
+              <select id="roleSelect" class="form-select">
+                <option value="user">User</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="form-label">Permissions</label>
+              <div class="checkbox-group">
+                <label class="checkbox-item">
+                  <input type="checkbox" checked>
+                  <span>Read Dashboard</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox">
+                  <span>Modify Settings</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox">
+                  <span>Manage Providers</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox">
+                  <span>Admin Access</span>
+                </label>
+              </div>
+            </div>
+            
+            <div>
+              <label class="form-label">Expires In</label>
+              <select class="form-select">
+                <option value="7">7 days</option>
+                <option value="30" selected>30 days</option>
+                <option value="90">90 days</option>
+                <option value="365">1 year</option>
+                <option value="never">Never</option>
+              </select>
+            </div>
+            
+            <button type="submit" id="generateBtn" class="btn-neon w-full">
+              <span id="generateBtnText">Generate Token</span>
+              <div id="generateBtnLoader" class="loading-spinner hidden"></div>
+            </button>
+          </form>
+          
+          <!-- Token Result -->
+          <div id="tokenResult" class="hidden mt-6">
+            <div class="p-4 rounded-xl bg-neon-cyan/10 border border-neon-cyan/30">
+              <p class="text-sm text-gray-400 mb-2">Generated Token:</p>
+              <div class="token-result !mx-0 !mt-0">
+                <span id="generatedToken" class="token-value">atm_v2_abc123xyz789...</span>
+                <button class="action-btn" onclick="copyGeneratedToken()" title="Copy">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                  </svg>
+                </button>
+              </div>
+              <p class="text-xs text-neon-yellow mt-3 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                Copy this now - it won't be shown again!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Management -->
+      <div class="lg:col-span-2">
+        <div class="glass-card overflow-hidden">
+          <div class="p-6 border-b border-white/10 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-white">User Management</h2>
+            <div class="flex items-center gap-3">
+              <input 
+                type="text" 
+                placeholder="Search tokens..."
+                class="form-input text-sm py-2 w-48"
+              >
+              <button class="action-btn">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Token</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Expires</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <code class="font-mono text-sm text-neon-cyan">atm_v2_••••••a3f9</code>
+                  </td>
+                  <td>
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-neon-red/10 text-neon-red border border-neon-red/20">Admin</span>
+                  </td>
+                  <td><span class="status-badge active"><span class="status-dot green"></span>Active</span></td>
+                  <td class="text-sm text-gray-400">Feb 13, 2025</td>
+                  <td class="text-sm text-gray-400">Never</td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <button class="action-btn" title="Edit">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                      </button>
+                      <button class="action-btn danger" title="Revoke">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <code class="font-mono text-sm text-neon-cyan">atm_v2_••••••b7e2</code>
+                  </td>
+                  <td>
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-neon-purple/10 text-neon-purple border border-neon-purple/20">Manager</span>
+                  </td>
+                  <td><span class="status-badge active"><span class="status-dot green"></span>Active</span></td>
+                  <td class="text-sm text-gray-400">Feb 12, 2025</td>
+                  <td class="text-sm text-gray-400">Mar 14, 2025</td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <button class="action-btn" title="Edit">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                      </button>
+                      <button class="action-btn danger" title="Revoke">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <code class="font-mono text-sm text-neon-cyan">atm_v2_••••••c1a5</code>
+                  </td>
+                  <td>
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20">User</span>
+                  </td>
+                  <td><span class="status-badge active"><span class="status-dot green"></span>Active</span></td>
+                  <td class="text-sm text-gray-400">Feb 10, 2025</td>
+                  <td class="text-sm text-gray-400">Mar 12, 2025</td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <button class="action-btn" title="Edit">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                      </button>
+                      <button class="action-btn danger" title="Revoke">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <code class="font-mono text-sm text-gray-500">atm_v2_••••••d8f1</code>
+                  </td>
+                  <td>
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20">User</span>
+                  </td>
+                  <td><span class="status-badge inactive"><span class="status-dot red"></span>Revoked</span></td>
+                  <td class="text-sm text-gray-400">Feb 05, 2025</td>
+                  <td class="text-sm text-gray-400">-</td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <button class="action-btn" title="View" disabled>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <code class="font-mono text-sm text-neon-cyan">atm_v2_••••••e4b6</code>
+                  </td>
+                  <td>
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-neon-purple/10 text-neon-purple border border-neon-purple/20">Manager</span>
+                  </td>
+                  <td><span class="status-badge pending"><span class="status-dot yellow"></span>Pending</span></td>
+                  <td class="text-sm text-gray-400">Feb 01, 2025</td>
+                  <td class="text-sm text-gray-400">Mar 03, 2025</td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <button class="action-btn" title="Edit">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                      </button>
+                      <button class="action-btn danger" title="Revoke">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="border-t border-white/10">
+            <div class="pagination">
+              <button class="page-btn" disabled>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+              </button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <span class="text-gray-500 px-2">...</span>
+              <button class="page-btn">12</button>
+              <button class="page-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('generateTokenForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('generateBtn');
+      const btnText = document.getElementById('generateBtnText');
+      const btnLoader = document.getElementById('generateBtnLoader');
+      
+      // Show loading state
+      btnText.classList.add('hidden');
+      btnLoader.classList.remove('hidden');
+      btn.disabled = true;
+      
+      // Simulate generation
+      setTimeout(() => {
+        btnText.classList.remove('hidden');
+        btnLoader.classList.add('hidden');
+        btn.disabled = false;
+        
+        // Show result
+        const tokenResult = document.getElementById('tokenResult');
+        const generatedToken = document.getElementById('generatedToken');
+        const randomToken = 'atm_v2_' + Array(24).fill(0).map(() => Math.random().toString(36).charAt(2)).join('');
+        generatedToken.textContent = randomToken;
+        tokenResult.classList.remove('hidden');
+      }, 1500);
+    });
+
+    function copyGeneratedToken() {
+      const token = document.getElementById('generatedToken').textContent;
+      navigator.clipboard.writeText(token).then(() => {
+        // Visual feedback could be added here
+        alert('Token copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>
