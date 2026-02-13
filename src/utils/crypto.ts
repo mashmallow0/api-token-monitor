@@ -123,19 +123,14 @@ export function constantTimeEqual(a: string, b: string): boolean {
 // Verify token against hash (timing-safe)
 export async function verifyToken(token: string, hash: string): Promise<boolean> {
   try {
-    // Always derive hash to prevent timing analysis on hash format
-    const encoder = new TextEncoder();
-    const data = encoder.encode(token);
-    
     // Check admin token first (using constant-time comparison)
     const adminHash = import.meta.env.VITE_ADMIN_TOKEN_HASH;
-    if (adminHash) {
-      // Use constant-time comparison for admin token
-      if (constantTimeEqual(token, adminHash)) {
-        // Still do normal verification to maintain constant time
-        // expectedHash would be adminHash in this case
-      }
+    if (adminHash && constantTimeEqual(token, adminHash)) {
+      return true;
     }
+    
+    const encoder = new TextEncoder();
+    const data = encoder.encode(token);
     
     // Parse the stored hash
     const parts = hash.split('$');
